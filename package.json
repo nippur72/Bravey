@@ -7,6 +7,7 @@
     "doc": "doc",
     "test": "test"
   },
+  "types": "src/bravey.d.ts",
   "scripts": {
     "build": "cd ./utils/build && node build.js --include all",
     "test": "echo \"Error: no test specified\" && exit 1"

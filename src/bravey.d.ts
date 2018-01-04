@@ -1,3 +1,5 @@
+// Entities
+
 export interface IntentEntity {
    entity: string;
    id: string;
@@ -11,7 +13,7 @@ export interface Entity<T = any> {
    priority: number;
 }
 
-/* nlp core */
+// Nlp 
 
 export type Stemmer = (word: string) => string;
 export type Filter = (tokens: string[]) => string[];
@@ -23,11 +25,16 @@ export interface NlpResult {
    score: number;
 }
 
-declare class NlpCore {
-   constructor(nlpName: string, extensions?: {
+interface NlpCoreConstructor {
+   new(nlpName: string, extensions?: {
       filter: Filter;
       stemmer: Stemmer;
-   });
+   }): NlpCore;
+}
+
+type testMethods = "default"|"anyEntity";
+
+interface NlpCore {
    addDocument(text: string, intent: string, guess?: {
       fromFullSentence?: boolean;   
       fromTaggedSentence?: boolean;
@@ -39,62 +46,68 @@ declare class NlpCore {
    getConfidence(): number;
    hasEntity(entityName: string): boolean;
    setConfidence(ratio: number): void;
-   test(text: string, method?: "default"|"anyEntity"): NlpResult|false;
+   test(text: string, method?: testMethods): NlpResult|false;
 }
 
-declare class Sequential extends NlpCore {
-   constructor();
+interface SequentialConstructor {
+   new(): NlpCore;
 }
 
-declare class Fuzzy extends NlpCore {
-   constructor();
+interface FuzzyConstructor {
+   new(): NlpCore;
 }
 
 export declare const Nlp: {   
-   Fuzzy: typeof Fuzzy;
-   Sequential: typeof Sequential;
+   Fuzzy: FuzzyConstructor;
+   Sequential: SequentialConstructor;
 };
 
-/* recognizers */
+// Recognizers 
 
 export type DateStamp = string;
 export type TimeStamp = string;
 
-declare class EntityRecognizer<T = any> {
+export interface EntityRecognizer<T = any> {
    getEntities(string: string, out?: Entity[]): Entity<T>[];
    getName(): string;
 }
 
 type regexEntityRecognizerCallback = (match: string[]) => Entity|undefined;
 
-export declare class RegexEntityRecognizer<T = any> extends EntityRecognizer<T> {
-   constructor(entityName: string);
+interface RegexEntityRecognizerConstructor<T = any> {
+   new(entityName: string): IRegexEntityRecognizer<T>;   
+}
+
+interface IRegexEntityRecognizer<T = any> extends EntityRecognizer<T> {   
    addMatch(regex: RegExp, callback: regexEntityRecognizerCallback, priority?: number): boolean;
 }
 
-export declare class StringEntityRecognizer extends EntityRecognizer<string> {
-   constructor(entityName: string, priority?: number);
+interface StringEntityRecognizerConstructor {
+   new(entityName: string, priority?: number): IStringEntityRecognizer;   
+}
+
+interface IStringEntityRecognizer extends EntityRecognizer<string> {
    addMatch(entityId: string, entityText: string): boolean;
 }
 
-export declare class EmailEntityRecognizer extends EntityRecognizer<string> {
-   constructor(entityName: string, priority?: number);   
+interface EmailEntityRecognizerConstructor {
+   new(entityName: string, priority?: number): EntityRecognizer<string>;   
 }
 
-declare class DateEntityRecognizer extends EntityRecognizer<DateStamp> {
-   constructor(entityName: string);
+interface DateEntityRecognizerConstructor  {
+   new(entityName: string): EntityRecognizer<DateStamp>;
 }
 
-declare class NumberEntityRecognizer extends EntityRecognizer<number> {
-   constructor(entityName: string);
+interface NumberEntityRecognizerConstructor  {
+   new(entityName: string): EntityRecognizer<number>;
 }
 
-declare class FreeTextEntityRecognizer extends EntityRecognizer<string> {
-   constructor(entityName: string);
+interface FreeTextEntityRecognizerConstructor  {
+   new(entityName: string): EntityRecognizer<string>;
 }
 
-declare class TimeEntityRecognizer extends EntityRecognizer<TimeStamp> {
-   constructor(entityName: string);
+interface TimeEntityRecognizerConstructor  {
+   new(entityName: string): EntityRecognizer<TimeStamp>;
 }
 
 interface Range<T> {
@@ -102,43 +115,100 @@ interface Range<T> {
    end: T;   
 }
 
-declare class TimePeriodEntityRecognizer extends EntityRecognizer<Range<TimeStamp>> {
-   constructor(entityName: string);
+interface TimePeriodEntityRecognizerConstructor  {
+   new(entityName: string): EntityRecognizer<Range<TimeStamp>>;
 }
 
-/* languages */
+export const StringEntityRecognizer: StringEntityRecognizerConstructor;
+export const RegexEntityRecognizer: RegexEntityRecognizerConstructor;
+export const EmailEntityRecognizer: EmailEntityRecognizerConstructor;
+export const DateEntityRecognizer: DateEntityRecognizerConstructor;
+export const NumberEntityRecognizer: NumberEntityRecognizerConstructor;
+export const FreeTextEntityRecognizer: FreeTextEntityRecognizerConstructor;
+export const TimeEntityRecognizer: TimeEntityRecognizerConstructor;
+export const TimePeriodEntityRecognizer: TimePeriodEntityRecognizerConstructor;
 
-export declare const Language: Language;
+// languages 
 
-declare interface Language_EN {
-   DateEntityRecognizer: typeof DateEntityRecognizer;
-   FreeTextEntityRecognizer: typeof FreeTextEntityRecognizer;
-   NumberEntityRecognizer: typeof NumberEntityRecognizer;
+interface Language_EN {
+   DateEntityRecognizer: DateEntityRecognizerConstructor;
+   FreeTextEntityRecognizer: FreeTextEntityRecognizerConstructor;
+   NumberEntityRecognizer: NumberEntityRecognizerConstructor;
    Stemmer: Stemmer;
-   TimeEntityRecognizer: typeof TimeEntityRecognizer;
-   TimePeriodEntityRecognizer: typeof TimePeriodEntityRecognizer;
+   TimeEntityRecognizer: TimeEntityRecognizerConstructor;
+   TimePeriodEntityRecognizer: TimePeriodEntityRecognizerConstructor;
 }
 
-declare interface Language_IT {
-   DateEntityRecognizer: typeof DateEntityRecognizer;
-   FreeTextEntityRecognizer: typeof FreeTextEntityRecognizer;
-   NumberEntityRecognizer: typeof NumberEntityRecognizer;
+interface Language_IT {
+   DateEntityRecognizer: DateEntityRecognizerConstructor;
+   FreeTextEntityRecognizer: FreeTextEntityRecognizerConstructor;
+   NumberEntityRecognizer: NumberEntityRecognizerConstructor;
    Stemmer: Stemmer;
-   TimeEntityRecognizer: typeof TimeEntityRecognizer;
-   TimePeriodEntityRecognizer: typeof TimePeriodEntityRecognizer;
+   TimeEntityRecognizer: TimeEntityRecognizerConstructor;
+   TimePeriodEntityRecognizer: TimePeriodEntityRecognizerConstructor;
 }
 
-declare interface Language_PT {
-   DateEntityRecognizer: typeof DateEntityRecognizer;
-   FreeTextEntityRecognizer: typeof FreeTextEntityRecognizer;
-   NumberEntityRecognizer: typeof NumberEntityRecognizer;
+interface Language_PT {
+   DateEntityRecognizer: DateEntityRecognizerConstructor;
+   FreeTextEntityRecognizer: FreeTextEntityRecognizerConstructor;
+   NumberEntityRecognizer: NumberEntityRecognizerConstructor;
    Stemmer: Stemmer;
-   TimeEntityRecognizer: typeof TimeEntityRecognizer;
-   TimePeriodEntityRecognizer: typeof TimePeriodEntityRecognizer;
+   TimeEntityRecognizer: TimeEntityRecognizerConstructor;
+   TimePeriodEntityRecognizer: TimePeriodEntityRecognizerConstructor;
 }
 
-export interface Language {
+interface Language {
    IT: Language_IT;
    EN: Language_EN;
    PT: Language_PT;
+}
+
+export const Language: Language;
+
+// context manager
+
+interface ContextManagerConstructor {
+   new(extensions?: { sessionManager: any }): ContextManager;
+}
+
+interface ContextManager {
+   addNlp(nlp: NlpCore, contexttags?: string[], method?: testMethods): void;
+   clearSessionIdData(sessionid: string): boolean;
+   getSessionIdData(sessionid: string): string[];
+   removeContext(contexttag: string[]): void;
+   removeNlp(nlp: NlpCore, contexttags?: string[]): void;
+   reserveSessionId(id: string): string;
+   setSessionIdContext(sessionid: string, contexttags: string[]): boolean;
+   setSessionIdData(sessionid: string, data: {[key: string]: string}): boolean;
+   testByContext(text: string, texttags?: string[]): ContextManagerResultByContext;
+   testBySessionId(text: string, texttags?: string[]): ContextManagerResultBySessionId|false;
+}
+
+export interface ContextManagerResultByContext {
+   result: NlpResult;
+   context: string;
+}
+
+export interface ContextManagerResultBySessionId {
+   result: NlpResult;
+   context: string;
+   sessionId: string;
+   sessionContext: string;
+   sessionData: any;   
+}
+
+// session manager 
+
+interface SessionManager {
+   clearData(sessionid: string): boolean;
+   getContext(sessionid: string): string[];
+   getData(sessionid: string): string[];
+   keepAlive(sessionid: string): boolean;
+   reserveSessionId(): string;
+   setContext(sessionid: string, contexttags: string[]): boolean;
+   setData(sessionid: string, data: {[key: string]: string}): boolean;
+}
+
+interface InMemorySessionManagerConstructor {
+   new(): SessionManager;
 }

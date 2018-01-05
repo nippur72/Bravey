@@ -68,7 +68,7 @@ Bravey.ApiAiAdapter = function(packagePath, extensions) {
           if (!nlp.hasEntity(b)) {
             skip = true;
             if (!missingEntity[b]) {
-              console.warn("Missing entity", b, data.userSays[i].data);
+              // console.warn("Missing entity", b, data.userSays[i].data);
               missingEntity[b] = 1;
             }
           }

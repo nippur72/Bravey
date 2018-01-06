@@ -253,4 +253,3 @@ interface DocumentClassifier {
 // Basic filter
 
 export const BasicFilter: Filter;
-

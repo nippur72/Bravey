@@ -212,3 +212,44 @@ interface SessionManager {
 interface InMemorySessionManagerConstructor {
    new(): SessionManager;
 }
+
+export const InMemorySessionManagerConstructor: InMemorySessionManagerConstructor;
+
+// ApiAi adapter
+
+interface ApiAiAdapterConstructor {
+   new(packagePath: string, extensions?: { language: string, nlp: string}): ApiAiAdapter;
+}
+
+interface ApiAiAdapter {
+   nlp: NlpCore;
+   loadEntity(name: string): void;
+   loadIntent(name: string): void;
+   prepare(cb: ()=>void): void;
+   test(text: string, method?: testMethods): NlpResult;
+}
+
+export const ApiAiAdapter: ApiAiAdapterConstructor;
+
+// document classifier
+
+interface DocumentClassification {
+   scores: number[];
+   winner: {
+      score: number;
+      label: string;
+   }
+}
+
+interface DocumentClassifierConstructor {
+   new (extensions?: { stemmer?: string });
+}
+
+interface DocumentClassifier {
+   addDocument(text: string, label: string): string;
+   classifyDocument(text: string): DocumentClassification; 
+}
+
+// Basic filter
+
+export const BasicFilter: Filter;

@@ -2575,7 +2575,7 @@ Bravey.Nlp.Fuzzy = function(nlpName, extensions) {
             entity: ent,
             id: nextid
           });
-          console.warn("Adding entity", nextid, "to", intent.name);
+          // console.warn("Adding entity", nextid, "to", intent.name);
         }
 
         if (pos == -1)
@@ -2615,7 +2615,7 @@ Bravey.Nlp.Fuzzy = function(nlpName, extensions) {
           entity: ent,
           id: nextid
         });
-        console.warn("Adding entity", nextid, "to", intent.name);
+        // console.warn("Adding entity", nextid, "to", intent.name);
       }
     });
 
@@ -2758,7 +2758,7 @@ Bravey.Nlp.Fuzzy = function(nlpName, extensions) {
 
         if (guess.expandIntent) { // Expand intent with found items
           if (!intents[intent]) {
-            console.warn("Adding intent", intent);
+            // console.warn("Adding intent", intent);
             this.addIntent(intent, []);
           }
           var expanded = expandIntentFromText(text, intents[intent], guess.withNames);
@@ -2769,7 +2769,7 @@ Bravey.Nlp.Fuzzy = function(nlpName, extensions) {
 
         if (guess.expandIntent) { // Expand intent with found items
           if (!intents[intent]) {
-            console.warn("Adding intent", intent);
+            // console.warn("Adding intent", intent);
             this.addIntent(intent, []);
           }
           var expanded = expandIntentFromTagged(text, intents[intent], guess.withNames);
@@ -2777,13 +2777,13 @@ Bravey.Nlp.Fuzzy = function(nlpName, extensions) {
         }
 
       }
-      console.warn("Can't guess...");
+      // console.warn("Can't guess...");
       return false;
     } else { // Link a marked sentence to a particular intent
       if (intents[intent])
         return documentClassifier.addDocument(Bravey.Text.clean(text), intent);
       else {
-        console.warn("Can't find intent", intent);
+        // console.warn("Can't find intent", intent);
         return false;
       }
     }
@@ -3160,7 +3160,7 @@ Bravey.Nlp.Sequential = function(nlpName, extensions) {
 
           var found = guessIntent(text, intent, guess.withNames);
           if (!intents[found.name]) {
-            console.warn("Adding intent", found.name);
+            // console.warn("Adding intent", found.name);
             this.addIntent(intent, found.entities);
           }
 
@@ -3172,24 +3172,24 @@ Bravey.Nlp.Sequential = function(nlpName, extensions) {
 
         var found = guessIntentFromTagged(text, intent, guess.withNames);
         if (found.error !== false) {
-          console.warn("Can't find entity typed", found.error);
+          // console.warn("Can't find entity typed", found.error);
           return false;
         } else {
           if (!intents[found.name]) {
-            console.warn("Adding intent", found.name);
+            // console.warn("Adding intent", found.name);
             this.addIntent(intent, found.entities);
           }
           return documentClassifier.addDocument(found.text, intent);
         }
 
       }
-      console.warn("Can't guess...");
+      // console.warn("Can't guess...");
       return false;
     } else { // Link a marked sentence to a particular intent
       if (intents[intent])
         return documentClassifier.addDocument(Bravey.Text.clean(text), getIntentRoot(intent));
       else {
-        console.warn("Can't find intent", intent);
+        // console.warn("Can't find intent", intent);
         return false;
       }
     }
